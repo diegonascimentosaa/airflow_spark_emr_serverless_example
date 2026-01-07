@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  airflow:
+    build: 
+      context: ./docker/airflow
+    user: "${AIRFLOW_UID:-50000}:0"
+    group_add:
+          - "989"
+    environment:
+      - AIRFLOW__CORE__AUTH_MANAGER=airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - HOST_SCRIPTS_PATH=${PWD}/scripts
+      - HOST_DATA_PATH=${PWD}/data
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./scripts:/opt/airflow/scripts
+      - ./data:/opt/airflow/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8080:8080"
+    command: airflow standalone
