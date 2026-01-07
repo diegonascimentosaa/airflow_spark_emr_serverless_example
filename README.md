@@ -28,11 +28,11 @@ O projeto segue a **Arquitetura Medalhão (Medallion Architecture)**, na qual os
 
 ## 🛠️ Tecnologias Utilizadas
 
-* **Apache Airflow** — Orquestração e agendamento de pipelines
-* **Apache Spark (PySpark)** — Processamento distribuído
-* **Docker & Docker Compose** — Containerização e infraestrutura
-* **Telegram Bot** — Alertas e monitoramento de execução
-* **Python** — Implementação dos scripts de ETL
+* **Apache Airflow** - Orquestração e agendamento de pipelines
+* **Apache Spark (PySpark)** - Processamento distribuído
+* **Docker & Docker Compose** - Containerização e infraestrutura
+* **Telegram Bot** - Alertas e monitoramento de execução
+* **Python** - Implementação dos scripts de ETL
 
 ---
 
@@ -91,14 +91,14 @@ docker build -t projeto-spark-custom:latest ./docker/spark
 Inicie todos os serviços de orquestração:
 
 ```bash
-docker-compose up -d
+docker-compose up
 ```
 
 Após a inicialização, acesse a interface do Airflow:
 
 * **URL:** [http://localhost:8080](http://localhost:8080)
 * **Usuário:** `airflow`
-* **Senha:** `airflow`
+* **Senha:** `Aparecerá ao final da compilação do docker-compose`
 
 ---
 
@@ -144,7 +144,7 @@ TELEGRAM_CHAT_ID = "SEU_CHAT_ID_AQUI"
 | Campo               | Valor                       |
 | ------------------- | --------------------------- |
 | **Connection Id**   | `telegram_default`          |
-| **Connection Type** | `Generic`                   |
+| **Connection Type** | `Telegram`                  |
 | **Password**        | Token gerado pelo BotFather |
 
 5. Clique em **Save**
