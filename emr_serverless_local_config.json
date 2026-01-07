@@ -1,0 +1,23 @@
+{
+  "name": "simulacao-emr-serverless-job",
+  "applicationId": "app-docker-simulation-001",
+  "executionRoleArn": "arn:aws:iam::000000000000:role/SimulatedLocalRole",
+  "jobDriver": {
+    "sparkSubmit": {
+      "entryPoint": "local:///app/scripts/main.py",
+      "entryPointArguments": [
+        "--mode", "incremental",
+        "--exec_date", "2024-01-01",
+        "--step", "ingestion"
+      ],
+      "sparkSubmitParameters": "--conf spark.master=local[*] --conf spark.driver.memory=1g --conf spark.executor.memory=1g"
+    }
+  },
+  "configurationOverrides": {
+    "monitoringConfiguration": {
+      "s3MonitoringConfiguration": {
+        "logUri": "file:///app/data/logs"
+      }
+    }
+  }
+}
