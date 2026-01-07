@@ -97,7 +97,7 @@ docker-compose up
 Após a inicialização, acesse a interface do Airflow:
 
 * **URL:** [http://localhost:8080](http://localhost:8080)
-* **Usuário:** `airflow`
+* **Usuário:** `admin`
 * **Senha:** `Aparecerá ao final da compilação do docker-compose`
 
 ---
