@@ -4,20 +4,20 @@ services:
   airflow:
     build: 
       context: ./docker/airflow
-    user: "${AIRFLOW_UID:-50000}:0"
+    user: "${AIRFLOW_UID:-50000}:0"  # Sincroniza UID do container com o host para gestão de permissões
     group_add:
-          - "989"
+          - "989"  # Concede permissão ao grupo Docker para acesso ao socket
     environment:
       - AIRFLOW__CORE__AUTH_MANAGER=airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
-      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor  # Habilita execução paralela de tarefas na mesma instância
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
-      - HOST_SCRIPTS_PATH=${PWD}/scripts
+      - HOST_SCRIPTS_PATH=${PWD}/scripts  # Caminhos absolutos do host injetados para o DockerOperator
       - HOST_DATA_PATH=${PWD}/data
     volumes:
       - ./dags:/opt/airflow/dags
       - ./scripts:/opt/airflow/scripts
       - ./data:/opt/airflow/data
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock  # Expõe o socket para permitir padrão Docker-out-of-Docker
     ports:
       - "8080:8080"
     command: airflow standalone

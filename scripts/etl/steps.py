@@ -12,10 +12,12 @@ class ETLStep:
         self.args = args
         self.endpoints = ["users", "posts", "comments"]
 
+    # Gera caminho do arquivo com base na camada, nome e data de execução
     def _get_path(self, layer, name, ext=""):
         filename = f"{name}_{self.args.exec_date}{ext}" if ext else name
         return os.path.join(self.BASE_PATH, layer, filename)
 
+    # Wrapper para leitura padronizada de arquivos Parquet
     def _read_parquet(self, layer, name):
         return self.spark.read.parquet(self._get_path(layer, name))
 
@@ -27,6 +29,7 @@ class IngestionStep(ETLStep):
     def execute(self):
         os.makedirs(os.path.join(self.BASE_PATH, "transient"), exist_ok=True)
 
+        # Consome API e salva JSON cru na camada transient
         for endpoint in self.endpoints:
             print(f"⬇️ Downloading: {endpoint}")
             data = get_api_data(endpoint)
@@ -46,6 +49,7 @@ class RawStep(ETLStep):
                 raise FileNotFoundError(f"File not found: {path_in}")
 
             print(f"⚙️ Processing RAW: {endpoint}")
+            # Converte JSON da transient para Parquet na RAW
             df = self.spark.read.json(path_in)
             write_parquet(df, "raw", endpoint)
 
@@ -54,6 +58,7 @@ class TrustedStep(ETLStep):
     def execute(self):
         print("🔨 Running Trusted...")
 
+        # Seleciona e renomeia colunas para padrão de negócio
         df_users = self._read_parquet("raw", "users").select(
             F.col("id").alias("user_id"),
             F.col("name").alias("user_name"),
@@ -87,6 +92,7 @@ class RefinedStep(ETLStep):
         p = self._read_parquet("trusted", "posts")
         c = self._read_parquet("trusted", "comments")
 
+        # Realiza joins entre as tabelas para criar visão analítica final
         df_final = (
             u.join(p, u.user_id == p.post_user_id, "inner")
             .join(c, p.post_id == c.comment_post_id, "inner")

@@ -1,7 +1,8 @@
 import sys
-import requests
+import requests  # Lib externa para requisições HTTP
 
 
+# Busca dados JSON da API e encerra o script em caso de erro
 def get_api_data(endpoint):
     base_url = "https://jsonplaceholder.typicode.com"
     try:
@@ -13,6 +14,7 @@ def get_api_data(endpoint):
         sys.exit(1)
 
 
+# Salva o DataFrame em formato Parquet sobrescrevendo o destino
 def write_parquet(df, layer, table_name):
     path = f"/app/data/{layer}/{table_name}"
     print(f"Saving to layer {layer.upper()}: {path}")

@@ -1,10 +1,13 @@
 from datetime import timedelta
+
+# Importa o Hook do provedor oficial do Airflow para Telegram
 from airflow.providers.telegram.hooks.telegram import TelegramHook
 
 TELEGRAM_CONN_ID = "telegram_default"
 TELEGRAM_CHAT_ID = "XXXXXXXXX"  # Updated
 
 
+# Formata a mensagem HTML e envia usando o Hook do Telegram
 def _send_telegram(context, status):
     ti = context.get("task_instance")
 
@@ -33,6 +36,7 @@ def _send_telegram(context, status):
         print(f"Error sending via Telegram: {e}")
 
 
+# Callbacks acionados pelo status da task
 def notify_success(context):
     _send_telegram(context, "success")
 
@@ -41,6 +45,7 @@ def notify_failure(context):
     _send_telegram(context, "failure")
 
 
+# Define os callbacks padrão para todas as tasks da DAG
 DEFAULT_ARGS = {
     "owner": "data_engineer",
     "retries": 1,
